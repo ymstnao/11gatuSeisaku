@@ -1460,13 +1460,13 @@ MonoBehaviour:
   moveSpeed: 7
   rotateSpeed: 2
   ForceGravity: 100
-  maxHp: 100
+  maxHp: 50
   hpBar: {fileID: 1683003760}
   freezTime: 2
   animSpeed: 1.5
   searchRange: {fileID: 1081754217}
   attackRange: {fileID: 1599634057}
-  attackCol: {fileID: 1061513148}
+  attackPower: 5
   deathflag: 0
 --- !u!1 &865279981
 GameObject:

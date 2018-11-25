@@ -6,34 +6,37 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(Animator))]
-public class Dragon : CharacterMove
+public class Dragon : Enemys
 {
+    //HP
     [SerializeField]
-    private float maxHp = 100;//MaxHP
+    private float maxHp = 10000;
+    private float nowHp;
+    //HPバー
     [SerializeField]
-    private Slider hpBar;//sliderObject
+    private Slider hpBar;
+    //攻撃間隔調整
     [SerializeField]
-    private float freezTime = 3.0f;//攻撃間隔調整
+    private float freezTime = 3.0f;
+    //敵追従範囲
     [SerializeField]
-    private GameObject searchRange;//敵追従範囲
+    private GameObject searchRange;
     private EnemySearchRange search;
+    //攻撃の範囲
     [SerializeField]
-    private GameObject attackRange;//攻撃の範囲
+    private GameObject attackRange;
     private EnemyAttackRange attackR;
+    // アニメーション再生速度設定
     [SerializeField]
-    private GameObject attackCol;
+    private float animSpeed = 1.5f;
+    //攻撃力
     [SerializeField]
-    private float animSpeed = 1.5f;// アニメーション再生速度設定
-
-    public static float attackPower = 10;//攻撃力
-    //フラグ-------------------------------
-    private bool isDamage;//ダメージフラグ
-    private bool freez;//攻撃間隔調整
-    public static bool deathFlag;//死んだか
-    private bool death;
-    //------------------------------------
-    private Transform player;//プレイヤーの場所
-    //アニメーション用--------------------------------------------------
+    public float attackPower = 10;
+    //フラグ
+    public bool deathFlag;//死んだか
+    //プレイヤーの場所
+    private Transform playerPosition;
+    //アニメーション用
     private Animator anim;// キャラにアタッチされるアニメーターへの参照
     private AnimatorStateInfo currentBaseState;// base layerで使われる、アニメーターの現在の状態の参照
     // アニメーター各ステートへの参照
@@ -41,34 +44,36 @@ public class Dragon : CharacterMove
     static int runState = Animator.StringToHash("Base Layer.Run");
     static int attackState = Animator.StringToHash("Base Layer.Attack");
     static int deathState = Animator.StringToHash("Base Layer.Death");
-    //------------------------------------------------------------------
     // Use this for initialization
     public override void Start()
     {
         base.Start();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        playerPosition = GameObject.FindGameObjectWithTag("Player").transform;
         // Animatorコンポーネントを取得する
         anim = GetComponent<Animator>();
 
         search = searchRange.GetComponent<EnemySearchRange>();
         attackR = attackRange.GetComponent<EnemyAttackRange>();
         //HPバー---------------------
+        nowHp = maxHp;
         hpBar.GetComponent<Slider>();
-        hpBar.value = maxHp;
+        hpBar.maxValue = maxHp;
+        hpBar.value = nowHp;
         //---------------------------
-        freez = false;
         deathFlag = false;
-        death = false;
-        searchRange.SetActive(true);//攻撃中動かないように
+
+        attackRange.SetActive(true);
+        searchRange.SetActive(true);
+
+        anim.SetBool(AnimationState.BOOL_DEATH, false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (death == false)
+        if (deathFlag == false)
         {
-            this.transform.LookAt(player);
-            Damage();
+            //this.transform.LookAt(playerPosition);
             AnimationController();
             Death();
         }
@@ -93,88 +98,85 @@ public class Dragon : CharacterMove
         // 現在のベースレイヤーがrunStateの時
         if (currentBaseState.fullPathHash == runState)
         {
+            searchRange.SetActive(true);
         }
         // Attack中
         // 現在のベースレイヤーがattackStateの時
         else if (currentBaseState.fullPathHash == attackState)
         {
+            searchRange.SetActive(false);
+            search.searchflag = false;
         }
         // IDLE中の処理
         // 現在のベースレイヤーがidleStateの時
         else if (currentBaseState.fullPathHash == idleState)
         {
+            searchRange.SetActive(true);
+        }
+        else if (currentBaseState.fullPathHash == deathState)
+        {
         }
         //----------------攻撃----------------------------
-        if (freez)
+        if (attackR.attackflag)
         {
-            anim.SetBool(AnimationState.BOOL_ATTACK, false);
-            searchRange.SetActive(false);//攻撃中動かないように
-            search.searchflag = false;
-            attackCol.SetActive(false);
-            freezTime -= 1 * Time.deltaTime;
-            if (freezTime <= 0)
-            {
-                freez = false;
-                freezTime = 3.0f;
-            }
-        }
-        else if (attackR.attackflag)
-        {
-            anim.SetBool(AnimationState.BOOL_ATTACK, true);
-            searchRange.SetActive(false);//攻撃中動かないように
-            search.searchflag = false;
-            attackCol.SetActive(true);
-            freezTime -= 2.5f * Time.deltaTime;
-            if (freezTime <= 0)
-            {
-                freez = true;
-                freezTime = 3.0f;
-            }
+            StartCoroutine("Attack");
         }
         else if (attackR.attackflag == false)
         {
-            attackCol.SetActive(false);
             anim.SetBool(AnimationState.BOOL_ATTACK, false);//無限に攻撃しないため
-            searchRange.SetActive(true);//攻撃終了時動けるように
         }
         //------------------------------------------------
     }
     public void FixedUpdate()
     {
-        if (death == false)
+        if (deathFlag == false)
         {
             if (search.searchflag)
             {
-                Vector3 v = player.position - transform.position;
-
+                Vector3 v = playerPosition.position - transform.position;
                 transform.rotation = Quaternion.LookRotation(v);
                 base.Move(v.normalized);
             }
         }
     }
-    public void Damage()
+    public void Damage(float damage)
     {
-        if (isDamage)
-        {
-            maxHp -= PlayerStatus.attackPower;
-            hpBar.value = maxHp;
-            isDamage = false;
-        }
-    }
-    void OnTriggerEnter(Collider col)
-    {
-        if (col.gameObject.tag == "PlayerAttack_Col")
-        {
-            isDamage = true;
-        }
+        nowHp -= damage;
+        hpBar.value = nowHp;
     }
     void Death()
     {
-        if (maxHp <= 0)
+        if (nowHp <= 0)
         {
             deathFlag = true;
-            death = true;
             anim.SetBool(AnimationState.BOOL_DEATH, true);
         }
+    }
+    bool attackCoroutine = false;
+    private IEnumerator Attack()
+    {
+        if (attackCoroutine)
+        {
+            yield break;
+        }
+
+        attackCoroutine = true;
+        anim.SetBool(AnimationState.BOOL_ATTACK, true);
+
+        yield return new WaitForSeconds(0.3f);
+        var p = Physics.OverlapSphere(transform.position, 2f);
+
+        for (var i = 0; i < p.Length; i++)
+        {
+            var playerStatus = p[i].GetComponent<PlayerStatus>();
+            if (playerStatus != null)
+            {
+                playerStatus.Damage(attackPower);
+            }
+        }
+        search.searchflag = false;
+        yield return new WaitForSeconds(1.3f);
+        attackCoroutine = false;
+        yield break;
     }
 }

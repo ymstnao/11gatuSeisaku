@@ -11,10 +11,6 @@ public class PlayerStatus : MonoBehaviour {
     [SerializeField]
     private Slider hpBar;//HPBarの参照
 
-    //攻撃力
-    public static float attackPower = 10;//プレイヤーの攻撃力
-    private float enemyAttackPower = 0;//エネミーの種類によって変更
-
 　　 // Use this for initialization
     void Start () {
         nowHp = maxHp;
@@ -25,7 +21,6 @@ public class PlayerStatus : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        //Damage();
         Death();
     }
     /// <summary>
@@ -33,12 +28,8 @@ public class PlayerStatus : MonoBehaviour {
     /// </summary>
     public void Damage(float damage)
     {
-    //    if (PlayerFlagManager.isDamage)
-    //    {
-            nowHp -= damage;
-            hpBar.value = nowHp;
-            PlayerFlagManager.isDamage = false;
-        //}
+        nowHp -= damage;
+        hpBar.value = nowHp;
     }
     /// <summary>
     /// HPが0になった時の処理

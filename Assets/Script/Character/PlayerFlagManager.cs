@@ -14,15 +14,12 @@ public class PlayerFlagManager : MonoBehaviour {
     public static bool run_flag;//走っているか
 
     public static bool death_flag;//死んだか
-
-    public static bool isDamage;//ダメージを受けているか
-
+    
     public static bool isPlayerStornMonster;//ストーンモンスターを使うか
   //-----------------------------------------------
     // Use this for initialization
     void Start () {
         death_flag = false;
-        isDamage = false;
         isPlayerStornMonster = true;//最初はストーンモンスター
     }
 	

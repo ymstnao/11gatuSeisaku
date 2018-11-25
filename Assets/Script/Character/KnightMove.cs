@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class KnightMove : CharacterMove
+public class KnightMove : Enemys
 {
     private Animator anim;// キャラにアタッチされるアニメーターへの参照
     private AnimatorStateInfo currentBaseState;// base layerで使われる、アニメーターの現在の状態の参照

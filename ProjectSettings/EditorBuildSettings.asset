@@ -8,4 +8,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/BossStage.unity
+    guid: b34d43d4770f1394ab06653cee779f20
+  - enabled: 1
+    path: Assets/Scenes/Congratulations.unity
+    guid: c9379c6dfe034844d9972705f9656f03
+  - enabled: 1
+    path: Assets/Scenes/DeathScene.unity
+    guid: 47c558947c23d3e4ba037d5ceffb3bac
+  - enabled: 1
+    path: Assets/Scenes/GamePlay.unity
+    guid: 0247ca9e1af4a9d4f9fb711dab399632
+  - enabled: 1
+    path: Assets/Scenes/Test.unity
+    guid: 691f623d08718f54580d819e61b14821
+  - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: d42f633088f55fa46aa77df36a461b51
   m_configObjects: {}

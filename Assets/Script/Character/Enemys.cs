@@ -3,9 +3,7 @@
 //必要なものをオブジェクトにつける
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerFlagManager))]
-public abstract class CharacterMove : MonoBehaviour {
-    [SerializeField]
-    private float lookSmoother = 3.0f;// a smoothing setting for camera motion
+public abstract class Enemys : MonoBehaviour {
     // 以下キャラクターコントローラ用パラメタ
     // 動く速度
     [SerializeField]

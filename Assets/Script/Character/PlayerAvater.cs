@@ -7,9 +7,10 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class PlayerAvater : MonoBehaviour
 {
+    //攻撃力
     [SerializeField]
-    private GameObject attackCol;//攻撃範囲
-//アニメーション関連--------------------------------------------------
+    private float attackPower = 10;//プレイヤーの攻撃力
+    //アニメーション関連--------------------------------------------------
     [SerializeField]
     private float animSpeed = 1.5f;// アニメーション再生速度設定
     private Animator anim;// キャラにアタッチされるアニメーターへの参照
@@ -46,7 +47,6 @@ public class PlayerAvater : MonoBehaviour
         else if (currentBaseState.fullPathHash == attackState)
         {
             anim.SetBool(AnimationState.BOOL_ATTACK, false);//無限に攻撃しないため
-            attackCol.SetActive(false);
         }
         // IDLE中の処理
         // 現在のベースレイヤーがidleStateの時
@@ -59,8 +59,7 @@ public class PlayerAvater : MonoBehaviour
         //----------------攻撃----------------------------
         if (Input.GetButtonDown("Attack") || Input.GetKeyDown(KeyCode.Z))
         {
-            anim.SetBool(AnimationState.BOOL_ATTACK, true);// Animatorに攻撃に切り替えるフラグを送る
-            attackCol.SetActive(true);
+            StartCoroutine("Attack");
         }
         //------------------------------------------------
         if (PlayerFlagManager.run_flag)
@@ -75,5 +74,36 @@ public class PlayerAvater : MonoBehaviour
         {
             anim.SetBool(AnimationState.BOOL_DEATH, true);
         }
+    }
+    bool attackCoroutine = false;
+    private IEnumerator Attack()
+    {
+        if (attackCoroutine)
+        {
+            yield break;
+        }
+
+        attackCoroutine = true;
+        anim.SetBool(AnimationState.BOOL_ATTACK, true);
+
+        yield return new WaitForSeconds(0.3f);
+        var p = Physics.OverlapSphere(transform.position, 2f);
+
+        for (var i = 0; i < p.Length; i++)
+        {
+            var skelton = p[i].GetComponent<Skeleton>();
+            if (skelton != null)
+            {
+                skelton.Damage(attackPower);
+            }
+            var Dragon = p[i].GetComponent<Dragon>();
+            if (Dragon != null)
+            {
+                Dragon.Damage(attackPower);
+            }
+        }
+        yield return new WaitForSeconds(1.3f);
+        attackCoroutine = false;
+        yield break;
     }
 }

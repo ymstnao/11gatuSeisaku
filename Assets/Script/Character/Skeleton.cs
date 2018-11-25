@@ -2,11 +2,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-public class Skeleton : CharacterMove
+public class Skeleton : Enemys
 {
-    //MaxHP
+    //HP
     [SerializeField]
-    private float maxHp = 100;
+    private float maxHp = 50;
+    private float nowHp;
     //HPバー
     [SerializeField]
     private Slider hpBar;
@@ -24,19 +25,14 @@ public class Skeleton : CharacterMove
     [SerializeField]
     private GameObject attackRange;
     private EnemyAttackRange attackR;
-    //攻撃範囲
-    [SerializeField]
-    private GameObject attackCol;
     //攻撃力
-    public static float attackPower = 10;//考えるべき
-    //フラグ-------------------------------
-    private bool isDamage;//ダメージフラグ
-    private bool freez;//攻撃間隔調整
-    public bool deathflag;
-    //------------------------------------
+    [SerializeField]
+    private float attackPower = 10;
+    //フラグ
+    public bool deathflag;//死んだか
     //プレイヤーの場所
     private Transform playerPosition;
-    //アニメーション用--------------------------------------------------
+    //アニメーション用
     private Animator anim;// キャラにアタッチされるアニメーターへの参照
     private AnimatorStateInfo currentBaseState;// base layerで使われる、アニメーターの現在の状態の参照
     // アニメーター各ステートへの参照
@@ -44,7 +40,6 @@ public class Skeleton : CharacterMove
     static int runState = Animator.StringToHash("Base Layer.Run");
     static int attackState = Animator.StringToHash("Base Layer.Attack");
     static int deathState = Animator.StringToHash("Base Layer.Death");
-    //------------------------------------------------------------------
     // Use this for initialization
     public override void Start()
     {
@@ -56,10 +51,11 @@ public class Skeleton : CharacterMove
         search = searchRange.GetComponent<EnemySearchRange>();
         attackR = attackRange.GetComponent<EnemyAttackRange>();
         //HPバー---------------------
+        nowHp = maxHp;
         hpBar.GetComponent<Slider>();
-        hpBar.value = maxHp;
+        hpBar.maxValue = maxHp;
+        hpBar.value = nowHp;
         //---------------------------
-        freez = false;
         deathflag = false;
 
         attackRange.SetActive(true);
@@ -73,7 +69,6 @@ public class Skeleton : CharacterMove
     {
         if (deathflag == false)
         {
-            Damage();
             AnimationController();
             Death();
         }
@@ -124,7 +119,6 @@ public class Skeleton : CharacterMove
         else if (attackR.attackflag == false)
         {
             anim.SetBool(AnimationState.BOOL_ATTACK, false);//無限に攻撃しないため
-            attackCol.SetActive(false);
         }
         //------------------------------------------------
     }
@@ -141,26 +135,14 @@ public class Skeleton : CharacterMove
             }
         }
     }
-    public void Damage()
+    public void Damage(float damage)
     {
-        if (isDamage)
-        {
-            isDamage = false;
-            maxHp -= PlayerStatus.attackPower;
-            hpBar.value = maxHp;
-        }
+        nowHp -= damage;
+        hpBar.value = nowHp;
     }
-    void OnTriggerEnter(Collider col)
-    {
-        if (col.gameObject.tag == "PlayerAttack_Col")
-        {
-            isDamage = true;
-        }
-    }
-
     void Death()
     {
-        if (maxHp <= 0)
+        if (nowHp <= 0)
         {
             deathflag = true;
             anim.SetBool(AnimationState.BOOL_DEATH, true);
@@ -186,7 +168,7 @@ public class Skeleton : CharacterMove
             var playerStatus = p[i].GetComponent<PlayerStatus>();
             if (playerStatus != null)
             {
-                playerStatus.Damage(10f);
+                playerStatus.Damage(attackPower);
             }
         }
         search.searchflag = false;
