@@ -1,9 +1,10 @@
-﻿using System;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
-public class Skeleton : Enemys
-{
+
+public class Angel : Enemys {
+
     //HP
     [SerializeField]
     private float maxHp = 50;
@@ -163,7 +164,7 @@ public class Skeleton : Enemys
         attackCoroutine = true;
         anim.SetBool(AnimationState.BOOL_ATTACK, true);
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.6f);
         var p = Physics.OverlapSphere(transform.position, 2f);
 
         for (var i = 0; i < p.Length; i++)
@@ -175,7 +176,7 @@ public class Skeleton : Enemys
             }
         }
         search.searchflag = false;
-        yield return new WaitForSeconds(1.3f);
+        yield return new WaitForSeconds(1.7f);
         attackCoroutine = false;
         yield break;
     }

@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - SkeltonAttack_Col
+  - PlayerAttack_Col
+  - Absorption_Col
+  - Skelton_Soul
   layers:
   - Default
   - TransparentFX

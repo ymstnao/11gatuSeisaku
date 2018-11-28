@@ -10,6 +10,9 @@ public class PlayerAvater : MonoBehaviour
     //攻撃力
     [SerializeField]
     private float attackPower = 10;//プレイヤーの攻撃力
+    //吸収エフェクト
+    [SerializeField]
+    private GameObject absorptionEffect;
     //アニメーション関連--------------------------------------------------
     [SerializeField]
     private float animSpeed = 1.5f;// アニメーション再生速度設定
@@ -20,7 +23,7 @@ public class PlayerAvater : MonoBehaviour
     static int runState = Animator.StringToHash("Base Layer.Run");
     static int attackState = Animator.StringToHash("Base Layer.Attack");
     static int deathState = Animator.StringToHash("Base Layer.Death");
-//---------------------------------------------------------------------
+    //---------------------------------------------------------------------
     // //初期化
     void Start()
     {
@@ -31,6 +34,19 @@ public class PlayerAvater : MonoBehaviour
     void Update()
     {
         AnimUpdate();
+        Absorption();
+    }
+    //吸収
+    void Absorption()
+    {
+        if (Input.GetKey(KeyCode.P))
+        {
+            absorptionEffect.SetActive(true);
+        }
+        else
+        {
+            absorptionEffect.SetActive(false);
+        }
     }
     void AnimUpdate()
     {
@@ -96,14 +112,20 @@ public class PlayerAvater : MonoBehaviour
             {
                 skelton.Damage(attackPower);
             }
+            var Angel = p[i].GetComponent<Angel>();
+            if (Angel != null)
+            {
+                Angel.Damage(attackPower);
+            }
             var Dragon = p[i].GetComponent<Dragon>();
             if (Dragon != null)
             {
                 Dragon.Damage(attackPower);
             }
         }
-        yield return new WaitForSeconds(1.3f);
+        yield return new WaitForSeconds(0.8f);
         attackCoroutine = false;
         yield break;
     }
+    
 }
