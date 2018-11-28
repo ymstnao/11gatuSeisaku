@@ -3,13 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(Animator))]
 public class PlayerAvater : MonoBehaviour
 {
-    //攻撃力
-    [SerializeField]
-    private float attackPower = 10;//プレイヤーの攻撃力
     //吸収エフェクト
     [SerializeField]
     private GameObject absorptionEffect;
@@ -104,6 +100,7 @@ public class PlayerAvater : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
         var p = Physics.OverlapSphere(transform.position, 2f);
+        var attackPower = transform.GetComponentInParent<PlayerStatus>().AttackPower;
 
         for (var i = 0; i < p.Length; i++)
         {

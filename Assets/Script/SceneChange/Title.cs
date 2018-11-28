@@ -48,4 +48,12 @@ public class Title : MonoBehaviour
             SceneManager.LoadScene(NextSceneName);
         }
     }
+    void NewGame()
+    {
+        Gameplay.load = false;
+    }
+    void LoadGame()
+    {
+        Gameplay.load = true;
+    }
 }

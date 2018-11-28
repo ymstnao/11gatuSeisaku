@@ -9,14 +9,53 @@ public class PlayerStatus : MonoBehaviour {
     private float maxHp = 100;//HPの最大値
     private float nowHp = 0;//現在のHP
     [SerializeField]
-    private Slider hpBar;//HPBarの参照
+    private HpUI hpUI;//HPBarの参照
+    //攻撃力
+    [SerializeField]
+    private float attackPower = 10;//プレイヤーの攻撃力
 
-　　 // Use this for initialization
+    public float AttackPower
+    {
+        get
+        {
+            return attackPower;
+        }
+
+        set
+        {
+            attackPower = value;
+        }
+    }
+    public float MaxHp
+    {
+        get
+        {
+            return maxHp;
+        }
+
+        set
+        {
+            maxHp = value;
+        }
+    }
+    public float NowHp
+    {
+        get
+        {
+            return nowHp;
+        }
+
+        set
+        {
+            nowHp = value;
+        }
+    }
+
+    // Use this for initialization
     void Start () {
-        nowHp = maxHp;
-        hpBar.GetComponent<Slider>();
-        hpBar.maxValue = maxHp;
-        hpBar.value = nowHp;
+        NowHp = MaxHp;
+        hpUI.GetComponent<Slider>();
+        hpUI.UIChange(MaxHp, NowHp);
     }
 	// Update is called once per frame
 	void Update ()
@@ -28,17 +67,29 @@ public class PlayerStatus : MonoBehaviour {
     /// </summary>
     public void Damage(float damage)
     {
-        nowHp -= damage;
-        hpBar.value = nowHp;
+        NowHp -= damage;
+        hpUI.UIChange(MaxHp, NowHp);
     }
     /// <summary>
     /// HPが0になった時の処理
     /// </summary>
     void Death()
     {
-        if (nowHp <= 0)
+        if (NowHp <= 0)
         {
             PlayerFlagManager.death_flag = true;
         }
+    }
+    public void Absorption(EnemyParameter targetParameter)
+    {
+        MaxHp += targetParameter.MaxHp;
+        NowHp += targetParameter.MaxHp;
+        hpUI.UIChange(MaxHp, NowHp);
+        attackPower += targetParameter.AttackPower;
+    }
+    public void HpChange(float value)
+    {
+        nowHp = value;
+        hpUI.UIChange(maxHp,nowHp);
     }
 }

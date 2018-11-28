@@ -15,6 +15,9 @@ public class Gameplay : MonoBehaviour
     private float red, green, blue;
     [SerializeField]
     private GameObject fadePanel;
+    public static bool load;
+    [SerializeField]
+    private PlayerStatus status;
 	// Use this for initialization
 	void Start () {
         sceneFlag = false;
@@ -23,7 +26,13 @@ public class Gameplay : MonoBehaviour
         green = fadePanel.GetComponent<Image>().color.g;
         blue = fadePanel.GetComponent<Image>().color.b;
         alfa = fadePanel.GetComponent<Image>().color.a;
-	}
+
+        if (load)
+        {
+            status.MaxHp = PlayerPrefs.GetFloat("HP", 0);
+            status.AttackPower = PlayerPrefs.GetFloat("AttackPower", 0);
+        }
+   }
     void Update()
     {
         if (sceneFlag)
