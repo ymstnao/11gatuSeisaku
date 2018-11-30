@@ -555,6 +555,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 114386207525399940, guid: fc9bfa77c82f92b458a8ec6ba058cb20,
+        type: 2}
+      propertyPath: floatingY
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114386207525399940, guid: fc9bfa77c82f92b458a8ec6ba058cb20,
+        type: 2}
+      propertyPath: floatingSpeed
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc9bfa77c82f92b458a8ec6ba058cb20, type: 2}
   m_IsPrefabAsset: 0
@@ -1001,6 +1011,7 @@ MonoBehaviour:
   speed: 0.5
   time: 1
   fadePanel: {fileID: 1153753362}
+  status: {fileID: 0}
 --- !u!82 &1498689221
 AudioSource:
   m_ObjectHideFlags: 0
