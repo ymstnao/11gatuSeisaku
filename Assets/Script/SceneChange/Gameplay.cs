@@ -11,6 +11,7 @@ public class Gameplay : MonoBehaviour
     private float speed = 0.01f;
     [SerializeField]
     private float time = 3f;
+    private float nowtime;
     private float alfa;
     private float red, green, blue;
     [SerializeField]
@@ -18,8 +19,13 @@ public class Gameplay : MonoBehaviour
     public static bool load;
     [SerializeField]
     private PlayerStatus status;
-	// Use this for initialization
-	void Start () {
+    [SerializeField]
+    private Transform[] respownPostion;
+    [SerializeField]
+    private GameObject[] stageTitle;
+    // Use this for initialization
+    void Start () {
+        nowtime = time;
         sceneFlag = false;
 
         red = fadePanel.GetComponent<Image>().color.r;
@@ -37,33 +43,46 @@ public class Gameplay : MonoBehaviour
     {
         if (sceneFlag)
         {
-            Goal();
+            MapChange();
         }
         if (PlayerFlagManager.death_flag)
         {
-            Death();
+            Respown();
         }
     }
-    void Goal()
+    void MapChange()
     {
         fadePanel.GetComponent<Image>().color = new Color(red, green, blue, alfa);
         alfa += speed * Time.deltaTime;
-        time -= speed * Time.deltaTime;
-        if (time <= 0)
+        nowtime -= speed * Time.deltaTime;
+        if (nowtime <= 0)
         {
            SceneManager.LoadScene(goal_Scene);
         }
     }
-    void Death()
+    void Respown()
     {
         fadePanel.GetComponent<Image>().color = new Color(red, green, blue, alfa);
         alfa += speed * Time.deltaTime;
-        time -= speed * Time.deltaTime;
-        if (time <= 0)
+        nowtime -= speed * Time.deltaTime;
+        if (nowtime <= 0)
         {
-            SceneManager.LoadScene(death_Scene);
+            RespownPositionChange();
+            status.HpChange(status.MaxHp);
+            alfa = 0;
+            nowtime = time;
         }
     }
+    void RespownPositionChange()
+    {
+        status.DeathPenalty();
+        fadePanel.GetComponent<Image>().color = new Color(red, green, blue, 0);
+        var number = PlayerPrefs.GetInt("RespownPosition", 0);
+        status.RespownPosition(number, respownPostion[number]);
+        stageTitle[number].SetActive(true);
+        PlayerFlagManager.death_flag = false;
+    }
+    
     void OnTriggerEnter(Collider col)
     {
         if(col.gameObject.tag=="Player")

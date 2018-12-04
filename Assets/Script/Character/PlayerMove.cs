@@ -9,6 +9,7 @@ public class PlayerMove : MonoBehaviour
     private float moveSpeed = 20.0f;
     [SerializeField]
     private float rotateSpeed = 20.0f;
+    private PlayerStatus status;
     //移動の時に使うVector3
     private Vector3 vel;
     private Rigidbody rigid;
@@ -50,6 +51,13 @@ public class PlayerMove : MonoBehaviour
         if (PlayerFlagManager.death_flag == false)
         {
             Move();
+        }
+    }
+    void OnTriggerStay(Collider col)
+    {
+        if (col.gameObject.tag == "DeathArea")
+        {
+            PlayerFlagManager.death_flag = true;
         }
     }
 }

@@ -8,6 +8,7 @@ TagManager:
   - PlayerAttack_Col
   - Absorption_Col
   - Skelton_Soul
+  - DeathArea
   layers:
   - Default
   - TransparentFX

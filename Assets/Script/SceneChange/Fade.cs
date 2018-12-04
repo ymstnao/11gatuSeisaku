@@ -13,6 +13,10 @@ public class Fade : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        Initialize();
+    }
+    void Initialize()
+    {
         //パネル用
         imageRed = fadePanel.GetComponent<Image>().color.r;
         imageGreen = fadePanel.GetComponent<Image>().color.g;
@@ -26,20 +30,25 @@ public class Fade : MonoBehaviour {
         textAlfa = fadeText.GetComponent<Text>().color.a;
         textAlfa = 1.0f;
     }
-	
 	// Update is called once per frame
 	void FixedUpdate () {
         ImageFade();
         TextFade();
+        if (imageAlfa <= 0 && imageAlfa <= 0)
+        {
+            Initialize();
+            this.gameObject.SetActive(false);
+        }
     }
     void ImageFade()
     {
         fadePanel.GetComponent<Image>().color = new Color(imageRed, imageGreen, imageBlue, imageAlfa);
-        imageAlfa -= speed;
+        imageAlfa -= speed * Time.fixedDeltaTime;
     }
     void TextFade()
     {
         fadeText.GetComponent<Text>().color = new Color(textRed, textGreen, textBlue, textAlfa);
-        textAlfa -= speed;
+        textAlfa -= speed * Time.fixedDeltaTime;
+        
     }
 }

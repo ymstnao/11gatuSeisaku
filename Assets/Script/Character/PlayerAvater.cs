@@ -9,6 +9,7 @@ public class PlayerAvater : MonoBehaviour
     //吸収エフェクト
     [SerializeField]
     private GameObject absorptionEffect;
+    private PlayerStatus status;
     //アニメーション関連--------------------------------------------------
     [SerializeField]
     private float animSpeed = 1.5f;// アニメーション再生速度設定
@@ -86,6 +87,10 @@ public class PlayerAvater : MonoBehaviour
         {
             anim.SetBool(AnimationState.BOOL_DEATH, true);
         }
+        else if (PlayerFlagManager.death_flag == false)
+        {
+            anim.SetBool(AnimationState.BOOL_DEATH, false);
+        }
     }
     bool attackCoroutine = false;
     private IEnumerator Attack()
@@ -124,5 +129,4 @@ public class PlayerAvater : MonoBehaviour
         attackCoroutine = false;
         yield break;
     }
-    
 }

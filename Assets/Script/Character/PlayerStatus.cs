@@ -9,7 +9,7 @@ public class PlayerStatus : MonoBehaviour {
     private float maxHp = 100;//HPの最大値
     private float nowHp = 0;//現在のHP
     [SerializeField]
-    private HpUI hpUI;//HPBarの参照
+    private StatuUI statuUI;//HPBarの参照
     //攻撃力
     [SerializeField]
     private float attackPower = 10;//プレイヤーの攻撃力
@@ -54,8 +54,9 @@ public class PlayerStatus : MonoBehaviour {
     // Use this for initialization
     void Start () {
         NowHp = MaxHp;
-        hpUI.GetComponent<Slider>();
-        hpUI.UIChange(MaxHp, NowHp);
+        statuUI.GetComponent<Slider>();
+        statuUI.HPUIChange(MaxHp, NowHp);
+        statuUI.AttackPowerUIChange(attackPower);
     }
 	// Update is called once per frame
 	void Update ()
@@ -68,7 +69,7 @@ public class PlayerStatus : MonoBehaviour {
     public void Damage(float damage)
     {
         NowHp -= damage;
-        hpUI.UIChange(MaxHp, NowHp);
+        statuUI.HPUIChange(MaxHp, NowHp);
     }
     /// <summary>
     /// HPが0になった時の処理
@@ -77,19 +78,41 @@ public class PlayerStatus : MonoBehaviour {
     {
         if (NowHp <= 0)
         {
+            DeathPenalty();
             PlayerFlagManager.death_flag = true;
         }
+    }
+    /// <summary>
+    /// 死んだ場合のデスペナルティ
+    /// </summary>
+    public void DeathPenalty()
+    {
+        MaxHp -= 10;
+        NowHp -= 10;
+        statuUI.HPUIChange(MaxHp, NowHp);
+
+        attackPower -= 10;
+        statuUI.AttackPowerUIChange(attackPower);
     }
     public void Absorption(EnemyParameter targetParameter)
     {
         MaxHp += targetParameter.MaxHp;
         NowHp += targetParameter.MaxHp;
-        hpUI.UIChange(MaxHp, NowHp);
+        statuUI.HPUIChange(MaxHp, NowHp);
+
         attackPower += targetParameter.AttackPower;
+        statuUI.AttackPowerUIChange(attackPower);
     }
     public void HpChange(float value)
     {
         nowHp = value;
-        hpUI.UIChange(maxHp,nowHp);
+        statuUI.HPUIChange(maxHp,nowHp);
+    }
+    public void RespownPosition(int number,Transform player)
+    {
+        if (PlayerPrefs.GetInt("RespownPosition", 0) == number)
+        {
+            transform.position = player.position;
+        }
     }
 }
