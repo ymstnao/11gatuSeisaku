@@ -23,6 +23,9 @@ public class Gameplay : MonoBehaviour
     private Transform[] respownPostion;
     [SerializeField]
     private GameObject[] stageTitle;
+
+    [SerializeField]
+    private FadeObject fade;
     // Use this for initialization
     void Start () {
         nowtime = time;
@@ -52,8 +55,8 @@ public class Gameplay : MonoBehaviour
     }
     void MapChange()
     {
-        fadePanel.GetComponent<Image>().color = new Color(red, green, blue, alfa);
-        alfa += speed * Time.deltaTime;
+        //fadePanel.GetComponent<Image>().color = new Color(red, green, blue, alfa);
+        //alfa += speed * Time.deltaTime;
         nowtime -= speed * Time.deltaTime;
         if (nowtime <= 0)
         {
@@ -88,6 +91,7 @@ public class Gameplay : MonoBehaviour
         if(col.gameObject.tag=="Player")
         {
             sceneFlag = true;
+            fade.StartFadeIn();
         }
     }
 }
